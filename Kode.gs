@@ -29,6 +29,26 @@ function getNodeBReport() {
   return report;
 }
 
+function getNodeBProgramDetails(program) {
+  if (typeof program !== 'string' || !program.trim() || program.length > 200) throw new Error('Program tidak valid.');
+  const ss = SpreadsheetApp.openById('1D6StHSC4cWCZLbAImb8EFjXwZ61-wwTQFkmMzstZJUY');
+  const sheet = ss.getSheets().find(s => s.getSheetId() === 0);
+  if (!sheet) throw new Error('Sheet NODE-B tidak ditemukan.');
+  return nodeBProgramDetails_(sheet.getDataRange().getDisplayValues(), program);
+}
+function nodeBProgramDetails_(values, program) {
+  const clean = v => String(v == null ? '' : v).trim().replace(/\s+/g,' ').toUpperCase();
+  const h = values.findIndex(r => r.some(v => clean(v) === 'SITE ID'));
+  if (h < 0) throw new Error('Kolom SITE ID tidak ditemukan.');
+  const header = values[h].map(clean);
+  const names = ['REGION','BRANCH','SITE ID','SITE NAME','MITRA','STATUS','PROGRAM'];
+  const cols = names.map(n => {const i=header.indexOf(n);if(i<0)throw new Error('Kolom '+n+' tidak ditemukan.');return i;});
+  const keys = ['region','branch','siteId','siteName','mitra','status'];
+  return values.slice(h+1).filter(r=>clean(r[cols[2]]) && clean(r[cols[6]]) === clean(program)).map(r=>{
+    const out={};keys.forEach((key,i)=>out[key]=String(r[cols[i]] == null ? '' : r[cols[i]]).trim());return out;
+  });
+}
+
 function nodeBCurve_(values) {
   const clean = v => String(v == null ? '' : v).trim().toUpperCase();
   const h = values.findIndex(r => r.some(v => clean(v) === 'SITE ID'));

@@ -249,6 +249,7 @@ html[data-theme=dark] .combined-card,html[data-theme=dark] .combined-panel,html[
 .nodeb-details{gap:16px}.nodeb-panel{border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 18px rgba(12,35,72,.05)}.nodeb-panel h3{padding:13px 10px;font-size:12px;letter-spacing:.065em;text-align:left;background:#102f5b}.nodeb-panel thead th{height:35px;background:var(--surface);font-size:9px}.nodeb-program-table tbody th,.nodeb-program-table tbody td{height:36px}.nodeb-panel tbody tr:hover{background:rgba(74,120,181,.06)}.nodeb-chart-pending{padding:10px 4px;color:var(--ink-soft)}
 html[data-theme=dark] #tab-nodeb{background:radial-gradient(ellipse at 100% 0,rgba(48,100,174,.2),transparent 60%),#0b1626}
 @media(max-width:1100px){.nodeb-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:720px){#tab-nodeb{padding:10px;border-radius:12px}.nodeb-kpis{grid-template-columns:1fr}.nodeb-kpi{min-height:136px}.nodeb-panel h3{padding:12px}}
+.nodeb-details{align-items:stretch}.nodeb-panel{display:flex;flex-direction:column}.nodeb-panel .nodeb-scroll{flex:1}.nodeb-panel .nodeb-milestone-table{height:100%;border-spacing:4px}.nodeb-panel .nodeb-milestone-table th,.nodeb-panel .nodeb-milestone-table td{height:32px;font-size:10px}.nodeb-panel h3{min-height:50px}.nodeb-panel h3 small{display:block;font-size:9px;font-weight:400;text-transform:none;margin-top:4px}.nodeb-program-link{border:0;background:none;color:inherit;font:inherit;text-align:left;text-transform:inherit;cursor:pointer;padding:5px 0}.nodeb-program-link:hover{text-decoration:underline}.nodeb-program-link:focus-visible{outline:2px solid #167abe}#nodeb-programs tr[data-program]{cursor:pointer}#nodeb-chart{display:block}#nodeb-chart svg{display:block;width:100%;min-height:270px}#nodeb-program-detail{width:min(1100px,94vw);max-height:85vh;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink)}#nodeb-program-detail::backdrop{background:rgba(6,20,42,.6)}.nodeb-detail-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.nodeb-detail-head h2{font-size:18px;margin:0}.nodeb-detail-scroll{max-height:65vh;overflow:auto}.nodeb-detail-scroll table{min-width:760px}.nodeb-detail-scroll th{background:#102f5b;color:#fff}.nodeb-detail-scroll td,.nodeb-detail-scroll th{text-align:left;padding:10px}#nodeb-detail-status{font-size:12px}
 </style>
 </head>
 <body>
@@ -391,13 +392,18 @@ html[data-theme=dark] #tab-nodeb{background:radial-gradient(ellipse at 100% 0,rg
       <div id="nodeb-status" class="combined-quality show">Memuat data NODE-B…</div>
       <div id="nodeb-kpis" class="nodeb-kpis"></div>
       <div class="nodeb-details">
-        <section class="nodeb-panel"><h3>Program Progress Overview</h3><div class="nodeb-scroll"><table class="nodeb-program-table"><thead><tr><th>Program</th><th>Progress</th><th>Order</th><th>Closed</th><th>Open</th></tr></thead><tbody id="nodeb-programs"></tbody></table></div></section>
+        <section class="nodeb-panel"><h3>Program Progress Overview <small>· klik baris untuk rincian site</small></h3><div class="nodeb-scroll"><table class="nodeb-program-table"><thead><tr><th>Program</th><th>Progress</th><th>Order</th><th>Closed</th><th>Open</th></tr></thead><tbody id="nodeb-programs"></tbody></table></div></section>
         <section class="nodeb-panel"><h3>Milestone Deployment</h3><div class="nodeb-scroll"><table class="nodeb-milestone-table"><thead><tr><th aria-label="Icon"></th><th>No</th><th>Milestone</th><th>Total Site</th><th>% dari Total Order</th></tr></thead><tbody id="nodeb-milestones"></tbody></table></div></section>
         <section class="nodeb-panel"><h3>S-Curve</h3><div class="nodeb-chart-pending" id="nodeb-chart" role="img" aria-label="S-Curve KOMITMEN OA dan REALISASI OA">Memuat grafik…</div></section>
       </div>
     </div>
   </section>
 
+  <dialog id="nodeb-program-detail" aria-labelledby="nodeb-detail-title">
+    <div class="nodeb-detail-head"><h2 id="nodeb-detail-title">Rincian Program</h2><form method="dialog"><button class="button" aria-label="Tutup rincian">Tutup</button></form></div>
+    <p id="nodeb-detail-status" role="status"></p>
+    <div class="nodeb-detail-scroll"><table><thead><tr><th>REGION</th><th>BRANCH</th><th>SITE ID</th><th>SITE NAME</th><th>MITRA</th><th>STATUS</th></tr></thead><tbody id="nodeb-detail-rows"></tbody></table></div>
+  </dialog>
   <footer id="report-footer">REPORT GOLIVE PT3 &#183; AREA 1</footer>
 </main>
 
@@ -1050,20 +1056,23 @@ function renderNodeBCurve(curve) {
   var host=document.getElementById('nodeb-chart'), points=curve&&curve.points||[];
   if (!points.length) {host.textContent='Tidak ada tanggal OA valid.';return;}
   var first=Date.parse(points[0].date), last=Date.parse(points[points.length-1].date);
-  var max=Math.max(1,points[points.length-1].plan,points[points.length-1].actual);
-  function x(p){return 44+(last===first?0.5:(Date.parse(p.date)-first)/(last-first))*330;}
-  function y(n){return 200-n/max*155;}
-  var svg='<svg viewBox="0 0 400 270" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg"><title>Jumlah site kumulatif berdasarkan tanggal OA</title>';
-  for(var i=0;i<=4;i++){var n=max*i/4;svg+='<path d="M44 '+y(n)+'H374" stroke="currentColor" opacity=".15"/><text x="39" y="'+(y(n)+3)+'" text-anchor="end" fill="currentColor" font-size="9">'+Math.round(n)+'</text>';}
-  [['plan','#167abe','Komitmen OA'],['actual','#087719','Realisasi OA']].forEach(function(series,index){
-    var path='M'+x(points[0])+' '+y(0);
-    points.forEach(function(p){path+=' H'+x(p)+' V'+y(p[series[0]]);});
-    svg+='<path d="'+path+'" fill="none" stroke="'+series[1]+'" stroke-width="2"/>';
-    points.forEach(function(p){svg+='<circle cx="'+x(p)+'" cy="'+y(p[series[0]])+'" r="3" fill="'+series[1]+'"><title>'+p.date+' · '+series[2]+': '+p[series[0]]+' kumulatif; '+p[series[0]+'Daily']+' site harian</title></circle>';});
-    svg+='<text x="'+(44+index*170)+'" y="249" fill="'+series[1]+'" font-size="11">'+series[2]+': '+points[points.length-1][series[0]]+'</text>';
+  var max=Math.max(1,points[points.length-1].plan,points[points.length-1].actual), ticks=[];
+  for(var t=new Date(Date.UTC(new Date(first).getUTCFullYear(),new Date(first).getUTCMonth(),1));t.getTime()<=last;t.setUTCMonth(t.getUTCMonth()+1)) ticks.push(t.getTime());
+  function xDate(ms){return 52+(last===first?0.5:(ms-first)/(last-first))*420;}
+  function x(p){return xDate(Date.parse(p.date));}
+  function y(n){return 214-n/max*168;}
+  function smooth(key){return points.map(function(p,i){return (i?'L':'M')+x(p).toFixed(1)+' '+y(p[key]).toFixed(1);}).join(' ');}
+  var svg='<svg viewBox="0 0 500 290" role="img" aria-label="Cumulative planned and actual OA sites over time" xmlns="http://www.w3.org/2000/svg"><title>Komitmen and Realisasi OA, cumulative sites by date</title>';
+  for(var i=0;i<=4;i++){var n=max*i/4, yy=y(n);svg+='<path d="M52 '+yy+'H472" stroke="currentColor" opacity=".12"/><text x="44" y="'+(yy+3)+'" text-anchor="end" fill="currentColor" font-size="9">'+Math.round(n)+'</text>';}
+  ticks.filter(function(ms){return ms>=first;}).filter(function(ms,i){return i%Math.max(1,Math.ceil(ticks.length/6))===0;}).forEach(function(ms){var xx=xDate(ms),date=new Date(ms);svg+='<path d="M'+xx+' 46V214" stroke="currentColor" opacity=".06"/><text x="'+xx+'" y="232" text-anchor="middle" fill="currentColor" font-size="8">'+date.toLocaleDateString('en',{month:'short',year:'2-digit',timeZone:'UTC'})+'</text>';});
+  [['plan','#167abe','Komitmen OA'],['actual','#087719','Realisasi OA']].forEach(function(s,index){
+    var end=points[points.length-1][s[0]];
+    svg+='<path d="'+smooth(s[0])+'" fill="none" stroke="'+s[1]+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+    points.forEach(function(p,i){if(i===0||i===points.length-1||p[s[0]+'Daily'])svg+='<circle cx="'+x(p)+'" cy="'+y(p[s[0]])+'" r="3.2" fill="'+s[1]+'"><title>'+p.date+' · '+s[2]+': '+p[s[0]]+' cumulative; +'+p[s[0]+'Daily']+' on date</title></circle>';});
+    svg+='<circle cx="'+(80+index*200)+'" cy="265" r="4" fill="'+s[1]+'"/><text x="'+(90+index*200)+'" y="269" fill="currentColor" font-size="10">'+s[2]+' '+end.toLocaleString()+'</text>';
   });
-  [0,1,2,3].forEach(function(i){var t=first+(last-first)*i/3;svg+='<text x="'+(44+i*110)+'" y="222" text-anchor="middle" fill="currentColor" font-size="8">'+new Date(t).toISOString().slice(0,10)+'</text>';});
-  host.innerHTML=svg+'</svg><small style="padding:0 12px 10px">Site kumulatif · Tanggal DD/MM/YYYY · Tanggal tidak valid: Komitmen '+(curve.invalidPlan||0)+', Realisasi '+(curve.invalidActual||0)+'</small>';
+  if(curve.invalidPlan||curve.invalidActual)svg+='<text x="472" y="24" text-anchor="end" fill="#bd171b" font-size="8">Invalid dates: '+(curve.invalidPlan+curve.invalidActual)+'</text>';
+  host.innerHTML=svg+'</svg><small>Daily dates grouped; lines show cumulative site counts.</small>';
 }
 function renderNodeB(data) {
   renderNodeBCurve(data.curve);
@@ -1077,10 +1086,26 @@ function renderNodeB(data) {
     ['GAP OA vs Order Released',data.gap,pct(data.order?data.gap/data.order*100:0)+' dari Order Released']
   ].map(function(c,i){return '<article class="nodeb-kpi nodeb-kpi-'+i+'"><span class="nodeb-icon">'+icon(i)+'</span><div><h3>'+escHtml(c[0])+'</h3><strong>'+fmt(c[1])+' <span>SITE</span></strong><small>'+escHtml(c[2])+'</small></div><div class="nodeb-kpi-meter" aria-hidden="true"><span style="width:'+(data.order?Math.min(100,c[1]/data.order*100):0)+'%"></span></div></article>';}).join('');
   var colors = ['#087719','#167abe','#c47b00','#703298','#62676c','#15233b'];
-  document.getElementById('nodeb-programs').innerHTML = data.programs.map(function(p,i){return '<tr style="--program-color:'+colors[i%colors.length]+'"><th scope="row"><span class="nodeb-program-icon">'+icon(i%4)+'</span>'+escHtml(p.name)+'</th><td><span class="nodeb-progress"><progress max="100" value="'+p.progress+'" aria-label="'+escHtml(p.name)+'"></progress><b>'+pct(p.progress)+'</b></span></td><td>'+fmt(p.order)+'</td><td>'+fmt(p.closed)+'</td><td>'+fmt(p.open)+'</td></tr>';}).join('') || '<tr><td colspan="5">Belum ada program.</td></tr>';
+  document.getElementById('nodeb-programs').innerHTML = data.programs.map(function(p,i){return '<tr data-program="'+escHtml(p.name)+'" style="--program-color:'+colors[i%colors.length]+'"><th scope="row"><button class="nodeb-program-link" type="button"><span class="nodeb-program-icon">'+icon(i%4)+'</span>'+escHtml(p.name)+'</button></th><td><span class="nodeb-progress"><progress max="100" value="'+p.progress+'" aria-label="'+escHtml(p.name)+'"></progress><b>'+pct(p.progress)+'</b></span></td><td>'+fmt(p.order)+'</td><td>'+fmt(p.closed)+'</td><td>'+fmt(p.open)+'</td></tr>';}).join('') || '<tr><td colspan="5">Belum ada program.</td></tr>';
   document.getElementById('nodeb-milestones').innerHTML = [{name:'Order',total:data.order,percentage:data.order?100:0}].concat(data.milestones).map(function(s,i){return '<tr><td class="nodeb-stage-icon">'+icon(i%4)+'</td><td>'+ (i+1)+'</td><th scope="row"><span>'+escHtml(s.name)+'</span></th><td><span>'+fmt(s.total)+'</span></td><td><span>'+pct(s.percentage)+'</span></td></tr>';}).join('');
   document.getElementById('nodeb-status').textContent = 'Diperbarui: '+new Date(data.updatedAt).toLocaleString('id-ID')+' · Sumber: NODE-B AREA 1 · Semua data; tidak mengikuti filter PT-2/PT-3.';
 }
+var NODEB_DETAIL_REQUEST=0;
+document.getElementById('nodeb-programs').addEventListener('click',function(e){
+  var row=e.target.closest('[data-program]');if(!row)return;
+  var program=row.getAttribute('data-program'), dialog=document.getElementById('nodeb-program-detail');
+  var status=document.getElementById('nodeb-detail-status'),body=document.getElementById('nodeb-detail-rows'),request=++NODEB_DETAIL_REQUEST;
+  document.getElementById('nodeb-detail-title').textContent='Rincian Program — '+program;
+  body.innerHTML='';status.textContent='Memuat rincian site…';dialog.showModal();
+  function failed(err){if(request===NODEB_DETAIL_REQUEST)status.textContent='Gagal memuat: '+((err&&err.message)||'Silakan coba lagi.');}
+  if(!(window.google&&google.script&&google.script.run)){failed({message:'Buka melalui Google Apps Script.'});return;}
+  google.script.run.withSuccessHandler(function(rows){
+    if(request!==NODEB_DETAIL_REQUEST)return;
+    if(!Array.isArray(rows)){failed({message:'Respons tidak valid.'});return;}
+    body.innerHTML=rows.map(function(r){return '<tr>'+['region','branch','siteId','siteName','mitra','status'].map(function(k){return '<td>'+escHtml(r[k])+'</td>';}).join('')+'</tr>';}).join('');
+    status.textContent=rows.length+' site · '+program;
+  }).withFailureHandler(failed).getNodeBProgramDetails(program);
+});
 function loadNodeBReport(force) {
   if (NODEB.loading || (NODEB.loaded && !force)) return;
   NODEB.loading = true;

@@ -375,7 +375,7 @@ html[data-theme=dark] .combined-card,html[data-theme=dark] .combined-panel,html[
       <div class="nodeb-details">
         <section class="nodeb-panel"><h3>Program Progress Overview</h3><div class="nodeb-scroll"><table class="nodeb-program-table"><thead><tr><th>Program</th><th>Progress</th><th>Order</th><th>Closed</th><th>Open</th></tr></thead><tbody id="nodeb-programs"></tbody></table></div></section>
         <section class="nodeb-panel"><h3>Milestone Deployment</h3><div class="nodeb-scroll"><table class="nodeb-milestone-table"><thead><tr><th aria-label="Icon"></th><th>No</th><th>Milestone</th><th>Total Site</th><th>% dari Total Order</th></tr></thead><tbody id="nodeb-milestones"></tbody></table></div></section>
-        <section class="nodeb-panel"><h3>S-Curve</h3><div class="nodeb-chart-pending">Grafik belum dikonfigurasi.</div></section>
+        <section class="nodeb-panel"><h3>S-Curve</h3><div class="nodeb-chart-pending" id="nodeb-chart" role="img" aria-label="S-Curve KOMITMEN OA dan REALISASI OA">Memuat grafik…</div></section>
       </div>
     </div>
   </section>
@@ -1028,7 +1028,27 @@ function activateTab(name) {
 }
 
 var NODEB = {loading:false,loaded:false};
+function renderNodeBCurve(curve) {
+  var host=document.getElementById('nodeb-chart'), points=curve&&curve.points||[];
+  if (!points.length) {host.textContent='Tidak ada tanggal OA valid.';return;}
+  var first=Date.parse(points[0].date), last=Date.parse(points[points.length-1].date);
+  var max=Math.max(1,points[points.length-1].plan,points[points.length-1].actual);
+  function x(p){return 44+(last===first?0.5:(Date.parse(p.date)-first)/(last-first))*330;}
+  function y(n){return 200-n/max*155;}
+  var svg='<svg viewBox="0 0 400 270" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg"><title>Jumlah site kumulatif berdasarkan tanggal OA</title>';
+  for(var i=0;i<=4;i++){var n=max*i/4;svg+='<path d="M44 '+y(n)+'H374" stroke="currentColor" opacity=".15"/><text x="39" y="'+(y(n)+3)+'" text-anchor="end" fill="currentColor" font-size="9">'+Math.round(n)+'</text>';}
+  [['plan','#167abe','Komitmen OA'],['actual','#087719','Realisasi OA']].forEach(function(series,index){
+    var path='M'+x(points[0])+' '+y(0);
+    points.forEach(function(p){path+=' H'+x(p)+' V'+y(p[series[0]]);});
+    svg+='<path d="'+path+'" fill="none" stroke="'+series[1]+'" stroke-width="2"/>';
+    points.forEach(function(p){svg+='<circle cx="'+x(p)+'" cy="'+y(p[series[0]])+'" r="3" fill="'+series[1]+'"><title>'+p.date+' · '+series[2]+': '+p[series[0]]+' kumulatif; '+p[series[0]+'Daily']+' site harian</title></circle>';});
+    svg+='<text x="'+(44+index*170)+'" y="249" fill="'+series[1]+'" font-size="11">'+series[2]+': '+points[points.length-1][series[0]]+'</text>';
+  });
+  [0,1,2,3].forEach(function(i){var t=first+(last-first)*i/3;svg+='<text x="'+(44+i*110)+'" y="222" text-anchor="middle" fill="currentColor" font-size="8">'+new Date(t).toISOString().slice(0,10)+'</text>';});
+  host.innerHTML=svg+'</svg><small style="padding:0 12px 10px">Site kumulatif · Tanggal DD/MM/YYYY · Tanggal tidak valid: Komitmen '+(curve.invalidPlan||0)+', Realisasi '+(curve.invalidActual||0)+'</small>';
+}
 function renderNodeB(data) {
+  renderNodeBCurve(data.curve);
   var pct = function(n){return Number(n).toFixed(1) + '%';};
   var icons = ['<circle cx="24" cy="24" r="15"/><circle cx="24" cy="24" r="8"/><path d="M24 4v12m0 16v12M4 24h12m16 0h12"/>','<path d="M17 30L12 36l1-10 17-17 10-2-2 10-17 17zM26 12l10 10M14 34l-4 4m8-1-4 5"/><circle cx="30" cy="16" r="3"/>','<circle cx="24" cy="24" r="17"/><path d="m13 24 8 8 15-17"/>','<path d="M9 37V25h6v12m6 0V19h6v18m6 0V30h6v7M9 10c13-7 23 0 28 11m-9-3 10 5 2-11"/>'];
   function icon(i){return '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'+icons[i]+'</svg>';}

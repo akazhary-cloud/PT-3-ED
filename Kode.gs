@@ -21,7 +21,52 @@ function getNodeBReport() {
   const ss = SpreadsheetApp.openById('1D6StHSC4cWCZLbAImb8EFjXwZ61-wwTQFkmMzstZJUY');
   const sheet = ss.getSheets().find(s => s.getSheetId() === 0);
   if (!sheet) throw new Error('Sheet NODE-B gid=0 tidak ditemukan.');
-  return nodeBReport_(sheet.getDataRange().getDisplayValues());
+  const timezone = ss.getSpreadsheetTimeZone();
+  // Read actual date cells, not ambiguous localized display strings.
+  const values = sheet.getDataRange().getValues().map(row => row.map(v => v instanceof Date ? Utilities.formatDate(v, timezone, 'yyyy-MM-dd') : v));
+  const report = nodeBReport_(values);
+  report.curve = nodeBCurve_(values);
+  return report;
+}
+
+function nodeBCurve_(values) {
+  const clean = v => String(v == null ? '' : v).trim().toUpperCase();
+  const h = values.findIndex(r => r.some(v => clean(v) === 'SITE ID'));
+  if (h < 0) throw new Error('Kolom SITE ID tidak ditemukan.');
+  const header = values[h].map(clean);
+  const cols = ['SITE ID','KOMITMEN OA','REALISASI OA'].map(name => {
+    const i = header.indexOf(name);
+    if (i < 0) throw new Error('Kolom ' + name + ' tidak ditemukan.');
+    return i;
+  });
+  function dateKey(value) {
+    const s = clean(value);
+    let m, y, month, day;
+    if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s))) {y=+m[1];month=+m[2];day=+m[3];}
+    else if ((m = /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/.exec(s))) {day=+m[1];month=+m[2];y=+m[3];}
+    else return '';
+    const d = new Date(Date.UTC(y,month-1,day));
+    if (d.getUTCFullYear() !== y || d.getUTCMonth() !== month-1 || d.getUTCDate() !== day) return '';
+    return d.toISOString().slice(0,10);
+  }
+  const days = new Map();
+  const invalid = [0,0];
+  values.slice(h+1).forEach(row => {
+    if (!clean(row[cols[0]])) return;
+    cols.slice(1).forEach((col,i) => {
+      if (!clean(row[col])) return;
+      const key = dateKey(row[col]);
+      if (!key) {invalid[i]++;return;}
+      if (!days.has(key)) days.set(key,{planDaily:0,actualDaily:0});
+      days.get(key)[i ? 'actualDaily' : 'planDaily']++;
+    });
+  });
+  let plan=0, actual=0;
+  const points = Array.from(days.keys()).sort().map(date => {
+    const d=days.get(date); plan+=d.planDaily;actual+=d.actualDaily;
+    return {date:date,plan:plan,actual:actual,planDaily:d.planDaily,actualDaily:d.actualDaily};
+  });
+  return {points:points,invalidPlan:invalid[0],invalidActual:invalid[1]};
 }
 
 function nodeBReport_(values) {

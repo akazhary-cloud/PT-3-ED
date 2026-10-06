@@ -16,6 +16,8 @@ assert.deepEqual(JSON.parse(JSON.stringify(p)), {name:'New Infra',order:5,closed
 assert.equal(d.milestones.reduce((n,s)=>n+s.total,0),10);
 assert.equal(d.milestones.find(s=>s.name==='Drop').total,2);
 assert.equal(d.milestones.find(s=>s.name==='Matdel').total,1);
+const material = ctx.nodeBReport_([rows[0],['A','MATERIAL PREPARATION','X'],['B','material delivery','X'],['C','02.MATERIAL PREPARATION','X'],['D','04.MATERIAL DELIVERY','X']]);
+assert.equal(material.milestones.find(s=>s.name==='Matdel').total,4);
 assert.equal(ctx.nodeBReport_([rows[0]]).gap,0);
 assert.throws(()=>ctx.nodeBReport_([['STATUS']]), /SITE ID/);
 assert.equal(typeof ctx.nodeBCurve_, 'function', 'S-curve aggregator missing');

@@ -17,6 +17,52 @@
  * =========================================================================
  */
 
+function getNodeBReport() {
+  const ss = SpreadsheetApp.openById('1D6StHSC4cWCZLbAImb8EFjXwZ61-wwTQFkmMzstZJUY');
+  const sheet = ss.getSheets().find(s => s.getSheetId() === 0);
+  if (!sheet) throw new Error('Sheet NODE-B gid=0 tidak ditemukan.');
+  return nodeBReport_(sheet.getDataRange().getDisplayValues());
+}
+
+function nodeBReport_(values) {
+  const text = v => String(v == null ? '' : v).trim().replace(/\s+/g, ' ');
+  const header = values.findIndex(r => r.some(v => text(v).toUpperCase() === 'SITE ID'));
+  if (header < 0) throw new Error('Kolom SITE ID tidak ditemukan.');
+  const names = values[header].map(v => text(v).toUpperCase());
+  const cols = ['SITE ID', 'STATUS', 'PROGRAM'].map(n => {
+    const i = names.indexOf(n);
+    if (i < 0) throw new Error('Kolom ' + n + ' tidak ditemukan.');
+    return i;
+  });
+  const stages = ['Drop','Aanwijzing','Perizinan','Matdel','Instalasi','Finish Install','On Air','Uji Terima'];
+  const aliases = {'drop':'Drop','hold':'Drop','plan drop':'Drop','aanwijzing':'Aanwijzing','perizinan':'Perizinan','matdel':'Matdel','material delivery':'Matdel','material preparation':'Matdel','instalasi':'Instalasi','finish install':'Finish Install','finish instalasi':'Finish Install','on air':'On Air','rfs':'On Air','uji terima':'Uji Terima'};
+  const programs = new Map(), counts = new Map();
+  let order = 0, deployment = 0, onAir = 0;
+  values.slice(header + 1).forEach(row => {
+    if (!text(row[cols[0]])) return;
+    order++;
+    const raw = text(row[cols[1]]).replace(/^\d+\s*[.\-:)]?\s*/, '').toLowerCase();
+    const status = aliases[raw] || raw.toUpperCase() || 'Tanpa Status';
+    counts.set(status, (counts.get(status) || 0) + 1);
+    if (stages.slice(4).includes(status)) deployment++;
+    if (status === 'On Air') onAir++;
+    const name = text(row[cols[2]]);
+    if (!name) return;
+    const key = name.toLowerCase();
+    if (!programs.has(key)) programs.set(key, {name:name,order:0,closed:0});
+    const p = programs.get(key);
+    p.order++;
+    if (status === 'On Air') p.closed++;
+  });
+  const percent = n => order ? n / order * 100 : 0;
+  return {
+    ok:true, order:order, deployment:deployment, onAir:onAir, gap:order-onAir,
+    updatedAt:new Date().toISOString(),
+    programs:Array.from(programs.values()).map(p => Object.assign(p,{open:p.order-p.closed,progress:p.closed/p.order*100})).sort((a,b)=>a.name.localeCompare(b.name)),
+    milestones:stages.concat(Array.from(counts.keys()).filter(s=>!stages.includes(s)).sort()).filter(s=>counts.has(s)).map(name=>({name:name,total:counts.get(name),percentage:percent(counts.get(name))}))
+  };
+}
+
 const CONFIG = {
   sourceSpreadsheetId: '1FdDuiHUKvRU7VMLydb5cZ5FNwU7Mqxp1zb2mAsTShS0',
   sheetName: 'Sheet1',               // Nama sheet sumber (otomatis fallback jika tidak ditemukan)

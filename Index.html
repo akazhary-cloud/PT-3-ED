@@ -229,6 +229,8 @@ html[data-theme=dark] button.callout-region:hover,html[data-theme=dark] button.c
 .combined-detail-dialog{width:min(1180px,96vw);max-height:90vh;padding:0;border:0;border-radius:15px;background:var(--surface);box-shadow:0 28px 80px rgba(7,17,31,.28)}.combined-detail-dialog::backdrop{background:rgba(7,17,31,.58);backdrop-filter:blur(3px)}.combined-detail-summary{display:flex;gap:8px;flex-wrap:wrap}.combined-detail-table{min-width:980px}.combined-detail-table .program-tag{display:inline-block;padding:3px 7px;border-radius:5px;background:#eef2ff;color:#3730a3;font-weight:800}.combined-detail-table .program-tag.pt3{background:#ecfdf9;color:#087f72}.combined-detail-table .yes{color:#087f72;font-weight:800}.combined-detail-table .no{color:#9aa8ba}
 html[data-theme=dark] .combined-card,html[data-theme=dark] .combined-panel,html[data-theme=dark] .combined-ranking{background:#101c2d}html[data-theme=dark] .combined-main-value strong{color:#f2f6fd}html[data-theme=dark] .combined-programs,html[data-theme=dark] .combined-active-days{background:#142237;border-color:#26364e}html[data-theme=dark] .combined-bar{background:#26364e}html[data-theme=dark] .combined-ach-badge{background:#2d2419}html[data-theme=dark] .combined-dist-stat{background:#202752;border-color:#36416e;color:#c5cfff}html[data-theme=dark] .combined-dist-stat.pt3{background:#123a35;border-color:#245c54;color:#8de1d5}html[data-theme=dark] .combined-quality{background:#3c2d16;border-color:#74562a;color:#ffd27a}html[data-theme=dark] .ranking-benchmark,html[data-theme=dark] .ranking-table th{background:#203452;border-color:#3d5575;color:#dce7f7}html[data-theme=dark] .ranking-table tbody tr:first-child{background:#2c281b}html[data-theme=dark] .ranking-metric{background:#1b2b42;color:#d7e2f1}html[data-theme=dark] .rank-score strong{color:#dce7f7}
 @media(max-width:1080px){.combined-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.combined-header{flex-direction:column}.combined-bottom{grid-template-columns:1fr}.combined-days-panel{overflow-x:auto}}@media(max-width:560px){.combined-card-grid{grid-template-columns:1fr}.combined-card{min-height:315px}}
+/* NODE-B reference layout; scoped to preserve existing dashboards. */
+#tab-nodeb{--nodeb-navy:#001b4d}.nodeb-shell{padding:8px 0;color:var(--nodeb-navy);font-family:Arial,sans-serif}.nodeb-shell .combined-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.nodeb-shell .combined-header h2{font-size:14px;margin:0}.nodeb-shell .combined-header p{display:none}.nodeb-shell #nodeb-status{font-size:10px;padding:4px 0;margin-bottom:8px}.nodeb-shell #nodeb-refresh{min-height:36px;border-radius:6px;padding:0 12px}.nodeb-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:30px;margin-bottom:10px}.nodeb-kpi{--kpi-color:#001b4d;position:relative;display:flex;align-items:center;gap:12px;min-height:100px;padding:12px 14px;border:1px solid #bdbdbd;border-radius:7px;background:var(--surface)}.nodeb-kpi-1{--kpi-color:#087719}.nodeb-kpi-2{--kpi-color:#f56a0a}.nodeb-kpi-3{--kpi-color:#bd171b}.nodeb-kpi:not(:last-child):after{content:'';position:absolute;right:-24px;width:16px;height:25px;background:#001b4d;clip-path:polygon(0 0,45% 0,100% 50%,45% 100%,0 100%,55% 50%)}.nodeb-icon{flex:0 0 66px;display:grid;place-items:center;width:66px;height:66px;border-radius:50%;color:white;background:var(--kpi-color)}.nodeb-icon svg{width:45px;height:45px}.nodeb-kpi h3{margin:0 0 5px;font-size:12px;font-weight:800;text-transform:uppercase;color:var(--kpi-color)}.nodeb-kpi strong{display:block;font-size:30px;line-height:1;color:var(--kpi-color);white-space:nowrap}.nodeb-kpi strong span{font-size:20px}.nodeb-kpi small{display:block;margin-top:7px;font-size:10px;font-weight:bold;color:var(--kpi-color)}.nodeb-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}.nodeb-panel{min-width:0;min-height:225px;overflow:hidden;border:1px solid #bdbdbd;border-radius:16px;background:var(--surface)}.nodeb-panel h3{margin:0;padding:4px 8px;background:#001b4d;color:#fff;text-align:center;font-size:17px;line-height:1.2;text-transform:uppercase}.nodeb-scroll{overflow-x:auto}.nodeb-panel table{width:100%;min-width:380px;font-size:11px}.nodeb-panel th,.nodeb-panel td{position:static;box-shadow:none;background:transparent;height:29px;padding:4px;border-bottom:1px solid #ddd;border-right:1px solid #ddd;text-align:center;color:var(--nodeb-navy);font-weight:bold}.nodeb-panel thead{background:transparent}.nodeb-panel thead th{font-size:8px;text-transform:uppercase;height:27px}.nodeb-panel tbody tr,.nodeb-panel tbody tr:nth-child(even),.nodeb-panel tbody tr:hover{background:transparent}.nodeb-program-table tbody th{text-align:left;text-transform:uppercase;font-size:9px;color:var(--program-color);white-space:normal;width:34%}.nodeb-program-icon{display:inline-block;vertical-align:middle;margin-right:4px}.nodeb-program-icon svg{width:19px;height:19px}.nodeb-progress{display:flex;align-items:center;gap:5px}.nodeb-progress progress{appearance:none;width:72px;height:11px;border:0;border-radius:20px;overflow:hidden;background:#eee3c4}.nodeb-progress progress::-webkit-progress-bar{background:#eee3c4;border-radius:20px}.nodeb-progress progress::-webkit-progress-value{background:var(--program-color);border-radius:20px}.nodeb-progress progress::-moz-progress-bar{background:var(--program-color);border-radius:20px}.nodeb-progress b{font-size:9px;color:var(--program-color)}.nodeb-milestone-table{border-collapse:separate;border-spacing:4px 3px;padding:5px 7px 12px}.nodeb-panel .nodeb-milestone-table td,.nodeb-panel .nodeb-milestone-table th{height:15px;padding:0;border:0;font-size:9px}.nodeb-milestone-table tbody th{text-align:left;font-weight:normal}.nodeb-milestone-table span{display:block;border-radius:10px;background:#ddd;padding:2px 8px}.nodeb-milestone-table .nodeb-stage-icon svg{width:17px;height:17px;vertical-align:middle;color:#a55619}.nodeb-chart-pending{display:grid;place-items:center;min-height:195px;color:var(--ink-soft);font-size:12px}html[data-theme=dark] .nodeb-shell{--nodeb-navy:#dce7f7}html[data-theme=dark] .nodeb-kpi{--kpi-color:#9bc2ff}html[data-theme=dark] .nodeb-kpi-1{--kpi-color:#6dd5a1}html[data-theme=dark] .nodeb-kpi-2{--kpi-color:#ffad69}html[data-theme=dark] .nodeb-kpi-3{--kpi-color:#ff8589}html[data-theme=dark] .nodeb-icon{color:#101c2d}html[data-theme=dark] .nodeb-milestone-table span{background:#2b3d56}html[data-theme=dark] .nodeb-panel th,html[data-theme=dark] .nodeb-panel td{border-color:#36455c}@media(max-width:1100px){.nodeb-kpis{gap:15px}.nodeb-kpi{padding:10px;gap:8px}.nodeb-icon{width:48px;height:48px;flex-basis:48px}.nodeb-icon svg{width:34px;height:34px}.nodeb-kpi strong{font-size:25px}.nodeb-kpi:not(:last-child):after{right:-13px;width:10px}.nodeb-details{grid-template-columns:1fr 1fr}.nodeb-details>.nodeb-panel:last-child{grid-column:1/-1}}@media(max-width:720px){.nodeb-kpis,.nodeb-details{grid-template-columns:1fr}.nodeb-kpi:not(:last-child):after{display:none}.nodeb-details>.nodeb-panel:last-child{grid-column:auto}.nodeb-kpi{min-height:90px}}
 </style>
 </head>
 <body>
@@ -285,6 +287,7 @@ html[data-theme=dark] .combined-card,html[data-theme=dark] .combined-panel,html[
     <button class="tab-button active" type="button" data-tab="dashboard" aria-selected="true">Executive Summary</button>
     <button class="tab-button" type="button" data-tab="monitoring" aria-selected="false">Monitoring Progress &amp; Prioritas PT-3</button>
     <button class="tab-button" type="button" data-tab="combined" aria-selected="false">Monitoring Golive PT-2 &amp; PT-3</button>
+    <button class="tab-button" type="button" data-tab="nodeb" aria-selected="false">NODE-B</button>
   </nav>
 
   <section class="tab-pane active" id="tab-dashboard">
@@ -360,6 +363,19 @@ html[data-theme=dark] .combined-card,html[data-theme=dark] .combined-panel,html[
       <div class="combined-bottom">
         <section class="combined-panel" id="combined-distribution"></section>
         <section class="combined-panel combined-days-panel" id="combined-days"></section>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-pane" id="tab-nodeb">
+    <div class="nodeb-shell">
+      <div class="combined-header"><div><h2>NODE-B — Area 1</h2><p>Ringkasan Order Release, Deployment, dan progres program.</p></div><button class="button-secondary" id="nodeb-refresh" type="button">Refresh</button></div>
+      <div id="nodeb-status" class="combined-quality show">Memuat data NODE-B…</div>
+      <div id="nodeb-kpis" class="nodeb-kpis"></div>
+      <div class="nodeb-details">
+        <section class="nodeb-panel"><h3>Program Progress Overview</h3><div class="nodeb-scroll"><table class="nodeb-program-table"><thead><tr><th>Program</th><th>Progress</th><th>Order</th><th>Closed</th><th>Open</th></tr></thead><tbody id="nodeb-programs"></tbody></table></div></section>
+        <section class="nodeb-panel"><h3>Milestone Deployment</h3><div class="nodeb-scroll"><table class="nodeb-milestone-table"><thead><tr><th aria-label="Icon"></th><th>No</th><th>Milestone</th><th>Total Site</th><th>% dari Total Order</th></tr></thead><tbody id="nodeb-milestones"></tbody></table></div></section>
+        <section class="nodeb-panel"><h3>S-Curve</h3><div class="nodeb-chart-pending">Grafik belum dikonfigurasi.</div></section>
       </div>
     </div>
   </section>
@@ -1003,12 +1019,41 @@ function activateTab(name) {
   for (var p = 0; p < panes.length; p++) { panes[p].classList.toggle('active', panes[p].id === 'tab-' + name); }
   if (name === 'monitoring') { renderMonitoring(false); }
   if ((name === 'dashboard' || name === 'combined') && typeof loadCombinedReport === 'function') { loadCombinedReport(); }
+  if (name === 'nodeb') { loadNodeBReport(); }
   var footer = document.getElementById('report-footer');
   if (footer) {
     var dateText = (PT3.cutoff || new Date()).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}).toUpperCase();
-    footer.textContent = (name === 'combined' ? 'REPORT GOLIVE PT-2 & PT-3' : 'REPORT GOLIVE PT3') + ' ' + CH.middot + ' AREA 1 ' + CH.middot + ' ' + dateText;
+    footer.textContent = (name === 'nodeb' ? 'REPORT NODE-B' : name === 'combined' ? 'REPORT GOLIVE PT-2 & PT-3' : 'REPORT GOLIVE PT3') + ' ' + CH.middot + ' AREA 1 ' + CH.middot + ' ' + dateText;
   }
 }
+
+var NODEB = {loading:false,loaded:false};
+function renderNodeB(data) {
+  var pct = function(n){return Number(n).toFixed(1) + '%';};
+  var icons = ['<circle cx="24" cy="24" r="15"/><circle cx="24" cy="24" r="8"/><path d="M24 4v12m0 16v12M4 24h12m16 0h12"/>','<path d="M17 30L12 36l1-10 17-17 10-2-2 10-17 17zM26 12l10 10M14 34l-4 4m8-1-4 5"/><circle cx="30" cy="16" r="3"/>','<circle cx="24" cy="24" r="17"/><path d="m13 24 8 8 15-17"/>','<path d="M9 37V25h6v12m6 0V19h6v18m6 0V30h6v7M9 10c13-7 23 0 28 11m-9-3 10 5 2-11"/>'];
+  function icon(i){return '<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'+icons[i]+'</svg>';}
+  document.getElementById('nodeb-kpis').innerHTML = [
+    ['Order Released',data.order,'SITE ID terisi'],
+    ['Deployment',data.deployment,pct(data.order?data.deployment/data.order*100:0)+' dari Order Released'],
+    ['On Air',data.onAir,pct(data.order?data.onAir/data.order*100:0)+' dari Order Released'],
+    ['GAP OA vs Order Released',data.gap,pct(data.order?data.gap/data.order*100:0)+' dari Order Released']
+  ].map(function(c,i){return '<article class="nodeb-kpi nodeb-kpi-'+i+'"><span class="nodeb-icon">'+icon(i)+'</span><div><h3>'+escHtml(c[0])+'</h3><strong>'+fmt(c[1])+' <span>SITE</span></strong><small>'+escHtml(c[2])+'</small></div></article>';}).join('');
+  var colors = ['#087719','#167abe','#c47b00','#703298','#62676c','#15233b'];
+  document.getElementById('nodeb-programs').innerHTML = data.programs.map(function(p,i){return '<tr style="--program-color:'+colors[i%colors.length]+'"><th scope="row"><span class="nodeb-program-icon">'+icon(i%4)+'</span>'+escHtml(p.name)+'</th><td><span class="nodeb-progress"><progress max="100" value="'+p.progress+'" aria-label="'+escHtml(p.name)+'"></progress><b>'+pct(p.progress)+'</b></span></td><td>'+fmt(p.order)+'</td><td>'+fmt(p.closed)+'</td><td>'+fmt(p.open)+'</td></tr>';}).join('') || '<tr><td colspan="5">Belum ada program.</td></tr>';
+  document.getElementById('nodeb-milestones').innerHTML = [{name:'Order',total:data.order,percentage:data.order?100:0}].concat(data.milestones).map(function(s,i){return '<tr><td class="nodeb-stage-icon">'+icon(i%4)+'</td><td>'+ (i+1)+'</td><th scope="row"><span>'+escHtml(s.name)+'</span></th><td><span>'+fmt(s.total)+'</span></td><td><span>'+pct(s.percentage)+'</span></td></tr>';}).join('');
+  document.getElementById('nodeb-status').textContent = 'Diperbarui: '+new Date(data.updatedAt).toLocaleString('id-ID')+' · Sumber: NODE-B AREA 1 · Semua data; tidak mengikuti filter PT-2/PT-3.';
+}
+function loadNodeBReport(force) {
+  if (NODEB.loading || (NODEB.loaded && !force)) return;
+  NODEB.loading = true;
+  var button = document.getElementById('nodeb-refresh');
+  button.disabled = true;
+  document.getElementById('nodeb-status').textContent = 'Memuat data NODE-B…';
+  function failure(err){NODEB.loading=false;button.disabled=false;document.getElementById('nodeb-status').textContent='Gagal memuat NODE-B: '+((err&&err.message)||'Silakan coba lagi')+(NODEB.loaded?' · Data sebelumnya tetap ditampilkan.':'');}
+  if (!(window.google && google.script && google.script.run)) {failure({message:'Buka dashboard melalui deployment Google Apps Script.'});return;}
+  google.script.run.withSuccessHandler(function(data){if(!data||!data.ok){failure({message:'Respons tidak valid.'});return;}NODEB.loading=false;NODEB.loaded=true;button.disabled=false;renderNodeB(data);}).withFailureHandler(failure).getNodeBReport();
+}
+document.getElementById('nodeb-refresh').addEventListener('click',function(){loadNodeBReport(true);});
 
 (function initTabs() {
   var buttons = document.querySelectorAll('.tab-button');
